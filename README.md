@@ -5,7 +5,6 @@
 A reproducible, declarative LaTeX dev shell powered by [purr](https://github.com/nixcafe/purr) + [git-hooks.nix](https://github.com/cachix/git-hooks.nix). One-shot init, zero global cruft — write your paper, let Nix handle the rest.
 
 Part of the [develop-templates](https://github.com/nixcafe/develop-templates) collection (`nix flake init`-ready).
-
 ## What's Inside
 
 | Tool | Purpose |
@@ -152,10 +151,11 @@ packages = with pkgs; [
 ├── .gitignore
 ├── statix.toml
 └── develop/
-    ├── checks/
-    │   └── git-hooks/
+    ├── shells/
+    │   └── default/
     │       └── default.nix
-    └── shells/
-        └── default/
+    └── checks/
+        └── git-hooks/
+            └── default.nix
             └── default.nix
 ```
