@@ -3,3 +3,23 @@
 result-*
 result
 /.pre-commit-config.yaml
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.dvi
+*.fdb_latexmk
+*.fls
+*.idx
+*.ilg
+*.ind
+*.log
+*.out
+*.pdf
+*.synctex
+*.synctex.gz
+*.toc
+*.xdv
+_minted-*/
+auto/

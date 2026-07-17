@@ -1,6 +1,6 @@
 # Nix Flake · LaTeX Dev Template
 
-> purr · git-hooks · latex · texlive · nix-flake
+> texlive · texlab · latexmk · purr · git-hooks
 
 A reproducible, declarative LaTeX dev shell powered by [purr](https://github.com/nixcafe/purr) + [git-hooks.nix](https://github.com/cachix/git-hooks.nix). One-shot init, zero global cruft — write your paper, let Nix handle the rest.
 
@@ -21,76 +21,44 @@ latexmk -pdf main.tex
 
 | Tool | Purpose |
 |------|---------|
-| `nixfmt-rfc-style` | Nix formatter |
+| `texlive` (scheme-medium) | LaTeX distribution with core packages |
+| `latexmk` | Build automation (`latexmk -pdf main.tex`) |
+| `texlab` | LSP language server |
+| `chktex` | LaTeX linter |
+| `latexindent` | LaTeX source formatter |
+| `minted` | Code syntax highlighting via Pygments |
+| `nixfmt` | Nix formatter |
 | `deadnix` | Remove dead Nix code |
 | `statix` | Nix linter |
 
-- **Dev shell** — `develop/shells/default/` ships `nixfmt-rfc-style`, `deadnix`, and `statix` in `$PATH`. `texlive` is provided by `nixpkgs`; add `texlive` packages to the shell (see [Customizing](#customizing)).
-- **Git hooks** — `develop/checks/git-hooks/` runs `nixfmt-rfc-style`, `deadnix`, and `statix` on every commit. The shell hook auto-installs them when you enter the dev shell.
+- **Dev shell** — `develop/shells/default/` ships `texlive` (scheme-medium + latexmk + minted + latexindent + chktex), `texlab`, `nixfmt`, `deadnix`, and `statix` in `$PATH`.
+- **Git hooks** — `develop/checks/git-hooks/` runs `nixfmt`, `deadnix`, and `statix` on every commit. The shell hook auto-installs them when you enter the dev shell.
 - **direnv** — `.envrc` calls `use flake` for auto-loading the dev shell on `cd`.
-
-No language-specific formatters or linters are included — you pick your own LaTeX tooling (e.g. `texlab`, `chktex`, `latexindent`).
+- **Sample** — `main.tex` is a minimal document showing the basic structure.
 
 ## Customizing
 
-### Add LaTeX Packages
+### Change TeX Live Scheme
 
-Edit `develop/shells/default/default.nix` and wire up `texlive` with the scheme and collection(s) you need:
+Edit `develop/shells/default/default.nix` and swap `scheme-medium` for a different scheme or add extra collections:
 
 ```nix
-# develop/shells/default/default.nix
-{
-  inputs,
-  pkgs,
-  system,
-  ...
-}:
-pkgs.mkShell {
-  packages = with pkgs; [
-    nixfmt-rfc-style
-    deadnix
-    statix
-    (texlive.combine {
-      inherit (texlive) scheme-medium collection-latexrecommended collection-fontsrecommended;
-    })
-  ];
-
-  shellHook = ''
-    ${inputs.self.checks.${system}.git-hooks.shellHook}
-  '';
-  buildInputs = inputs.self.checks.${system}.git-hooks.enabledPackages;
-}
+tex = pkgs.texlive.combine {
+  inherit
+    (pkgs.texlive)
+    scheme-full
+    # scheme-basic
+    # collection-latexrecommended
+    # collection-fontsrecommended
+    latexmk
+    minted
+    latexindent
+    chktex
+    ;
+};
 ```
 
 For a minimal footprint use `scheme-basic` + your specific collections. For the full TeX Live suite use `scheme-full`.
-
-### Add Your Own Formatters
-
-This template ships without LaTeX-specific formatters so you can choose what fits your workflow. Drop them into the shell packages:
-
-```nix
-packages = with pkgs; [
-  nixfmt-rfc-style
-  deadnix
-  statix
-  texlab        # LSP
-  chktex        # linter
-  latexindent   # formatter
-  (texlive.combine { inherit (texlive) scheme-medium; })
-];
-```
-
-Then enable the corresponding git hooks in `develop/checks/git-hooks/default.nix`:
-
-```nix
-hooks = {
-  nixfmt-rfc-style.enable = true;
-  deadnix.enable = true;
-  statix.enable = true;
-  # chktex.enable = true;
-  # latexindent.enable = true;
-};
-```
 
 ### Pin a Specific nixpkgs Snap
 
@@ -107,13 +75,14 @@ inputs = {
 ```nix
 # develop/shells/default/default.nix
 packages = with pkgs; [
-  nixfmt-rfc-style
+  tex
+  texlab
+  nixfmt
   deadnix
   statix
   inkscape        # SVG → PDF
   gnuplot         # plots
   python3Packages.pygments  # minted code highlighting
-  (texlive.combine { inherit (texlive) scheme-full; })
 ];
 ```
 
@@ -125,6 +94,7 @@ packages = with pkgs; [
 ├── .envrc
 ├── .gitignore
 ├── statix.toml
+├── main.tex
 └── develop/
     ├── checks/
     │   └── git-hooks/
