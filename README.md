@@ -1,10 +1,21 @@
 # Nix Flake · LaTeX Dev Template
 
-> purr · git-hooks · latex · texlive · nixfmt · deadnix · statix · direnv · flake · reproducible · template · pdf
+> purr · git-hooks · latex · texlive · nix-flake
 
 A reproducible, declarative LaTeX dev shell powered by [purr](https://github.com/nixcafe/purr) + [git-hooks.nix](https://github.com/cachix/git-hooks.nix). One-shot init, zero global cruft — write your paper, let Nix handle the rest.
 
-Part of the [develop-templates](https://github.com/nixcafe/develop-templates) collection (`nix flake init`-ready).
+## Quick Start
+
+```bash
+gh repo create my-latex-project --template nixcafe/latex --clone
+direnv allow
+```
+
+### Build Your Document
+
+```bash
+latexmk -pdf main.tex
+```
 
 ## What's Inside
 
@@ -19,43 +30,6 @@ Part of the [develop-templates](https://github.com/nixcafe/develop-templates) co
 - **direnv** — `.envrc` calls `use flake` for auto-loading the dev shell on `cd`.
 
 No language-specific formatters or linters are included — you pick your own LaTeX tooling (e.g. `texlab`, `chktex`, `latexindent`).
-
-## Quick Start
-
-### `nix flake init`
-
-```bash
-nix flake init -t "github:nixcafe/develop-templates#latex" --refresh
-```
-
-Register an alias:
-
-```bash
-nix registry add beans "github:nixcafe/develop-templates"
-nix flake init -t beans#latex
-```
-
-> **Tip**: With [cattery-modules](https://github.com/nixcafe/cattery-modules), `beans` is pre-registered.
-
-### Create from Template
-
-```bash
-gh repo create my-project --template nixcafe/latex --clone
-```
-
-### Enter the Dev Shell
-
-```bash
-direnv allow
-# or without direnv:
-nix develop
-```
-
-### Build Your Document
-
-```bash
-latexmk -pdf main.tex
-```
 
 ## Customizing
 
