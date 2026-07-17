@@ -1,30 +1,10 @@
 # Nix Flake · LaTeX Dev Template
 
+> purr · git-hooks · latex · texlive · nixfmt · deadnix · statix · direnv · flake · reproducible · template · pdf
+
 A reproducible, declarative LaTeX dev shell powered by [purr](https://github.com/nixcafe/purr) + [git-hooks.nix](https://github.com/cachix/git-hooks.nix). One-shot init, zero global cruft — write your paper, let Nix handle the rest.
 
-`nix` `latex` `texlive` `purr` `git-hooks` `nixfmt` `deadnix` `statix` `direnv` `flake` `reproducible` `template` `pdf` `typst`
-
 Part of the [develop-templates](https://github.com/nixcafe/develop-templates) collection (`nix flake init`-ready).
-
-## Usage
-
-```bash
-# initialize a project from the template
-nix flake init -t "github:nixcafe/develop-templates#latex" --refresh
-
-# or create a full repo
-gh repo create my-project --template nixcafe/latex --clone
-
-# enter the shell (auto-loads via direnv if .envrc is present)
-direnv allow
-# or without direnv:
-nix develop
-
-# build your document
-latexmk -pdf main.tex
-```
-
-> **Tip**: Register a short alias — `nix registry add beans "github:nixcafe/develop-templates"` — then `nix flake init -t beans#latex`. If you use [cattery-modules](https://github.com/nixcafe/cattery-modules), `beans` is pre-registered.
 
 ## What's Inside
 
@@ -34,9 +14,48 @@ latexmk -pdf main.tex
 | `deadnix` | Remove dead Nix code |
 | `statix` | Nix linter |
 
+- **Dev shell** — `develop/shells/default/` ships `nixfmt-rfc-style`, `deadnix`, and `statix` in `$PATH`. `texlive` is provided by `nixpkgs`; add `texlive` packages to the shell (see [Customizing](#customizing)).
+- **Git hooks** — `develop/checks/git-hooks/` runs `nixfmt-rfc-style`, `deadnix`, and `statix` on every commit. The shell hook auto-installs them when you enter the dev shell.
+- **direnv** — `.envrc` calls `use flake` for auto-loading the dev shell on `cd`.
+
 No language-specific formatters or linters are included — you pick your own LaTeX tooling (e.g. `texlab`, `chktex`, `latexindent`).
 
-`texlive` is provided by `nixpkgs`; add `texlive` packages to the shell (see [Customizing](#customizing)). Git pre-commit hooks are enabled by default for all three Nix tools above.
+## Quick Start
+
+### `nix flake init`
+
+```bash
+nix flake init -t "github:nixcafe/develop-templates#latex" --refresh
+```
+
+Register an alias:
+
+```bash
+nix registry add beans "github:nixcafe/develop-templates"
+nix flake init -t beans#latex
+```
+
+> **Tip**: With [cattery-modules](https://github.com/nixcafe/cattery-modules), `beans` is pre-registered.
+
+### Create from Template
+
+```bash
+gh repo create my-project --template nixcafe/latex --clone
+```
+
+### Enter the Dev Shell
+
+```bash
+direnv allow
+# or without direnv:
+nix develop
+```
+
+### Build Your Document
+
+```bash
+latexmk -pdf main.tex
+```
 
 ## Customizing
 
@@ -133,10 +152,10 @@ packages = with pkgs; [
 ├── .gitignore
 ├── statix.toml
 └── develop/
-    ├── shells/
-    │   └── default/
+    ├── checks/
+    │   └── git-hooks/
     │       └── default.nix
-    └── checks/
-        └── git-hooks/
+    └── shells/
+        └── default/
             └── default.nix
 ```
