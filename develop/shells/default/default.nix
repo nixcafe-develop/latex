@@ -6,8 +6,7 @@
 }:
 let
   tex = pkgs.texlive.combine {
-    inherit
-      (pkgs.texlive)
+    inherit (pkgs.texlive)
       scheme-medium
       latexmk
       minted
