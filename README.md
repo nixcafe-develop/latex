@@ -7,7 +7,7 @@ A reproducible, declarative LaTeX dev shell powered by [purr](https://github.com
 ## Quick Start
 
 ```bash
-gh repo create my-latex-project --template nixcafe/latex --clone
+gh repo create my-latex-project --template nixcafe-develop/latex --clone
 direnv allow
 ```
 
